@@ -38,6 +38,11 @@ struct kmem_cache {
 #endif
 
 #include <linux/memcontrol.h>
+#include <linux/fault-inject.h>
+#include <linux/kmemcheck.h>
+#include <linux/kasan.h>
+#include <linux/kmemleak.h>
+#include <linux/random.h>
 
 /*
  * State of the slab allocator.
@@ -370,5 +375,20 @@ void *slab_start(struct seq_file *m, loff_t *pos);
 void *slab_next(struct seq_file *m, void *p, loff_t *pos);
 void slab_stop(struct seq_file *m, void *p);
 int memcg_slab_show(struct seq_file *m, void *p);
+
+void ___cache_free(struct kmem_cache *cache, void *x, unsigned long addr);
+
+#ifdef CONFIG_SLAB_FREELIST_RANDOM
+int cache_random_seq_create(struct kmem_cache *cachep, unsigned int count,
+			gfp_t gfp);
+void cache_random_seq_destroy(struct kmem_cache *cachep);
+#else
+static inline int cache_random_seq_create(struct kmem_cache *cachep,
+					unsigned int count, gfp_t gfp)
+{
+	return 0;
+}
+static inline void cache_random_seq_destroy(struct kmem_cache *cachep) { }
+#endif /* CONFIG_SLAB_FREELIST_RANDOM */
 
 #endif /* MM_SLAB_H */
