@@ -304,13 +304,20 @@
 			compatible = "android,firmware";
 			fstab {
 				compatible = "android,fstab";
+				/*
+				vbmeta {
+					compatible = "android,vbmeta";
+					parts = "vbmeta,boot,system,vendor";
+					by_name_prefix = "/dev/block/platform/soc/c0c4000.sdhci/by-name";
+				};
+				*/
 				vendor {
 					compatible = "android,vendor";
 					dev = "/dev/block/platform/soc/c0c4000.sdhci/by-name/vendor";
 					type = "ext4";
 					mnt_flags = "ro,barrier=1,discard";
 			/* Huaqin modify for ZQL1650-169 by lanshiming at 2018/1/18 start*/
-					fsmgr_flags = "wait";
+					fsmgr_flags = "wait,avb";
 					status = "ok";
 				};
 				system {
@@ -318,7 +325,7 @@
 					dev = "/dev/block/platform/soc/c0c4000.sdhci/by-name/system";
 					type = "ext4";
 					mnt_flags = "ro,barrier=1,discard";
-					fsmgr_flags = "wait";
+					fsmgr_flags = "wait,avb";
 			/* Huaqin modify for ZQL1650-169 by lanshiming at 2018/1/18 end*/
 					status = "ok";
 				};
